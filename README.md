@@ -8,6 +8,7 @@ Example For the first player, the information would be:
 
 1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and dividing by the total number of games played.
 
+[text File can be downloaned from here ](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/tournamentinfo.txt)
 
 # Contributors:
 * Santosh Cheruku
