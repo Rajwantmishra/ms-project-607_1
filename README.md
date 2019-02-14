@@ -2,6 +2,14 @@
 
 Chess Data extraction for MS Project class of 607 
 
+Contributors:
+Santosh Cheruku
+Samantha Deokinanan
+Rajwant Mishra
+Priya Shaji
+
+
+
 ***Data in Text File***
 
 [![Data in Text File](https://whatsq.com/wp-content/uploads/2018/08/sample.png)]()
