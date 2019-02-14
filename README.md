@@ -6,7 +6,7 @@ Chess Data extraction for MS Project class of 607
 
 [![Data in Text File](https://whatsq.com/wp-content/uploads/2018/08/sample.png)]()
 
-***Data After***
+***Data after work in R***
 
 [![Data After](https://whatsq.com/wp-content/uploads/2018/08/workingsample.png)]()
 
