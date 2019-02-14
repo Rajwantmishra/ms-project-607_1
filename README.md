@@ -11,10 +11,10 @@ Example For the first player, the information would be:
 [text File can be downloaned from here ](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/tournamentinfo.txt)
 
 # Contributors:
-* Santosh Cheruku
-* Samantha Deokinanan
-* Rajwant Mishra
-* Priya Shaji
+* [Santosh Cheruku](https://github.com/...)
+* [Samantha Deokinanan](https://github.com/greeneyefirefly)
+* [Rajwant Mishra](https://github.com/rajwantmishra)
+* [Priya Shaji] (https://github.com/...)
 
 
 
