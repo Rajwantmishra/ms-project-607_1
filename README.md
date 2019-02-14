@@ -10,7 +10,8 @@ Chess Data extraction for MS Project class of 607
 
 [![Data After](https://whatsq.com/wp-content/uploads/2018/08/workingsample.png)]()
 
-******************Please note (Below full set is template will have to udpate as per our need )*********************
+
+>******************Please note (Below full set is template will have to udpate as per our need )*********************
 
 ## Getting Started
 
