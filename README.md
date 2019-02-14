@@ -2,10 +2,10 @@
 
 
 # Contributors:
-Santosh Cheruku
-Samantha Deokinanan
-Rajwant Mishra
-Priya Shaji
+* Santosh Cheruku
+* Samantha Deokinanan
+* Rajwant Mishra
+* Priya Shaji
 
 # Problem : 
 In this project, you’re given a text file with chess tournament results where the information has some structure. Your job is to create an R Markdown file that generates a .CSV file (that could for example be imported into a SQL database) with the following information for all of the players:
