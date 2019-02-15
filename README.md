@@ -20,11 +20,11 @@ Example For the first player, the information would be:
 
 ***Data in Text File***
 
-[![Data in Text File](https://whatsq.com/wp-content/uploads/2018/08/sample.png)]()
+[![Data in Text File](https://i2.wp.com/whatsq.com/wp-content/uploads/2018/08/sample.png)]()
 
 ***Data after work in R***
 
-[![Data After](https://whatsq.com/wp-content/uploads/2018/08/workingsample.png)]()
+[![Data After](https://i2.wp.com/whatsq.com/wp-content/uploads/2018/08/workingsample.png)]()
 
 
 >******************Please note (Below full set is template will have to udpate as per our need )*********************
