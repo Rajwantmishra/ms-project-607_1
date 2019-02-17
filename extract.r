@@ -1,4 +1,17 @@
 
+#install.packages("tidyverse")
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+suppressWarnings(library(data.table))
+library(plyr)
+library(XML)
+library(crayon)
+library(lubridate)
+library(rjson)
+library(readxl) 
+
+## END OF LOADING
+
 # Skip the 1st row "----------"
 # Read the data 
 cd2 <-read_lines("tournamentinfo.txt",skip = 1)
