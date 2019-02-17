@@ -40,9 +40,39 @@ head(playerID)
 
 tempFull_Data <- trimws(unlist(str_extract_all(cd2_data,"[[:alpha:] ?]{2,}|[\\d.?\\d? +]{2,}|[\\d +]{1,2}|[\\w:?\\d? +]{2,}",simplify = TRUE)))
 
-tempFull_Data <- as.data.frame(tempFull_Data)
+tempFull_Data <- as.data.frame(tempFull_Data, stringsAsFactors=F)
 
 tempFull_Data <- tempFull_Data[which(!tempFull_Data$V1=="NA"),]
 View(tempFull_Data)
+tempFull_Data_merged <- tempFull_Data
+
+tempFull_Data_merged <- 
 
 ##This is a test comment by Santosh
+
+#Create two empty data frames which can hold first and second rows respectively (2nd row belongs to player in 1st row)
+tempFull_Data_first <- data.frame()
+tempFull_Data_second <- data.frame()
+
+#Iterator over full dataset and load the first and second data frames
+for(rowNum in 1:nrow(tempFull_Data)) {
+  if(rowNum %% 2 == 0) {
+    tempFull_Data_second <- rbind(tempFull_Data_second, tempFull_Data[rowNum,])
+  } else {
+    tempFull_Data_first <- rbind(tempFull_Data_first, tempFull_Data[rowNum,])
+  }
+}
+
+#Set colnames for 2nd dataframe so that it doesn't conflict with first dataframe i.e., from V20 to V33
+
+columnNames1 <- c()
+for (i in 20:33) {
+  columnNames1 <- c(columnNames1, paste("V", i, sep = ""))
+}
+
+colnames(tempFull_Data_second) <- columnNames1
+
+#Merge both the dataframes using cbind
+tempFull_Data_merged <- cbind(tempFull_Data_first, tempFull_Data_second)
+tempFull_Data_merged
+
