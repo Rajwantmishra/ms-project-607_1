@@ -11,7 +11,7 @@ library(rjson)
 library(readxl) 
 
 ## END OF LOADING
-
+##Commit from Rajwant Start
 # Skip the 1st row "----------"
 # Read the data 
 cd2 <-read_lines("tournamentinfo.txt",skip = 1)
@@ -45,8 +45,8 @@ tempFull_Data <- as.data.frame(tempFull_Data, stringsAsFactors=F)
 tempFull_Data <- tempFull_Data[which(!tempFull_Data$V1=="NA"),]
 # View(tempFull_Data)
 tempFull_Data_merged <- tempFull_Data
-
-##This is a test comment by Santosh
+##Commit from Rajwant End
+##Commit from Santosh Start
 
 #Create two empty data frames which can hold first and second rows respectively (2nd row belongs to player in 1st row)
 tempFull_Data_first <- data.frame()
@@ -72,9 +72,97 @@ colnames(tempFull_Data_second) <- columnNames1
 
 #Merge both the dataframes using cbind
 tempFull_Data_merged <- cbind(tempFull_Data_first, tempFull_Data_second)
-View(tempFull_Data_merged)
+#View(tempFull_Data_merged)
 
+##Commit from Santosh End
+##Commit from Rajwant Start
 chessRound  <- tempFull_Data_merged[,c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,22,23)]
 
 # R1O, R2O are indicator of Opponent of respective rounds
 names(chessRound) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
+
+# Example For the first player, the information would be:
+# 
+# Gary Hua, ON, 6.0, 1794, 1605
+# 
+# 1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and dividing by the total number of games played.
+
+ # Convert All Pre to right number 
+ chessRound[,18:20] <- mutate( chessRound[,18:20], 
+                  Pre = ifelse( str_detect(Pre,"P\\d{2}$"), 
+                                trimws(str_extract(Pre," \\d{3,4}")), 
+                                trimws(str_extract(Pre," \\d{3,4}")) ))
+
+# Convert all ROunds COlumn to NA if they have  B H U . Only keep W L ANF D
+ chessRound_Temp <- mutate_at( chessRound[,1:17], vars(R1,R2,R3,R4,R5,R6,R7,R1O,R2O,R3O,R4O,R5O,R6O,R7O),
+                        list(~ ifelse( str_detect(.,"B|H|U"), NA, .)))
+ 
+ # Shift all NA to end of the Row 
+ # Here I am grouping the data into non-NA set and NA , for each row and then using Tranpose get in right format. 
+
+chessRound_Temp <- t(apply(chessRound_Temp, 1,  function(x) c(x[!is.na(x)], x[is.na(x)])))
+ 
+ chessRound_Temp <- as.data.frame(chessRound_Temp,stringsAsFactors=F)
+
+ Final_Chess_Data <- data.frame(chessRound_Temp[,],chessRound[,18:20])
+ 
+ names(Final_Chess_Data) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
+ 
+# "Average Pre Chess Rating of Opponents (1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and
+# dividing by the total number of games played.)"				
+# Opponent	Rating	game Played
+# 39	  1436	1
+# 21	  1563	1
+# 18	  1600	1
+# 14	  1610	1
+# 7	    1649	1
+# 12	  1663	1
+# 4	    1716	1
+#-----------------------
+# 	    1605	7
+ 
+#  teamR <- 0
+#  noMatch <- 0
+# team<- Final_Chess_Data[1,c(5,7,9,11,13,15,17)]
+#  for (n in team)
+#  {
+#    print.noquote(n)
+#    if(is.na(n)|n==""){
+#      noMatch = noMatch
+#     } else{
+#       noMatch = noMatch + 1
+#       teamR<-  teamR + as.integer(Final_Chess_Data[as.integer(n),19])
+#    }
+# 
+#    print.noquote(teamR)
+# 
+#  }
+#  score <- round(teamR/noMatch)
+# 
+# Final_Chess_Data[39,19]
+
+AVGS<- function(pid){
+  score <- 0
+  teamR <- 0
+ noMatch <- 0
+ suppressWarnings(rm(team))
+team<- Final_Chess_Data[pid,c(5,7,9,11,13,15,17)] 
+ for (n in 1:7)
+ {
+   if(is.na(team[1,n])||team[1,n]==""){
+     noMatch = noMatch
+    } else{
+       noMatch = noMatch + 1
+        teamR<-  teamR + as.integer(Final_Chess_Data[as.integer(team[1,n]),19])
+   }
+ }
+  score <- round(teamR/noMatch)
+  return(score[1])
+}
+
+for (n in 1:dim(Final_Chess_Data)[1]){
+  Final_Chess_Data$score[n] <- AVGS(as.integer(Final_Chess_Data$PID[n]))
+ 
+}
+##Commit from Rajwant End
+
