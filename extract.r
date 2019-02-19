@@ -38,15 +38,13 @@ head(playerID)
 # [4] "   MI | 14598900 / R: 1553   ->1663     |N:2  |B    |W    |B    |W    |B    |W    |B    |"
 
 
-tempFull_Data <- trimws(unlist(str_extract_all(cd2_data,"[[:alpha:] ?]{2,}|[\\d.?\\d? +]{2,}|[\\d +]{1,2}|[\\w:?\\d? +]{2,}",simplify = TRUE)))
+tempFull_Data <-  trimws(unlist(str_extract_all(cd2_data,"[[:alpha:]-? ?]{2,}|[\\d.?\\d? +]{2,}|[\\d +]{1,2}|[\\w:?\\d? +]{2,}",simplify = TRUE)))
 
 tempFull_Data <- as.data.frame(tempFull_Data, stringsAsFactors=F)
 
 tempFull_Data <- tempFull_Data[which(!tempFull_Data$V1=="NA"),]
-View(tempFull_Data)
+# View(tempFull_Data)
 tempFull_Data_merged <- tempFull_Data
-
-tempFull_Data_merged <- 
 
 ##This is a test comment by Santosh
 
@@ -74,5 +72,8 @@ colnames(tempFull_Data_second) <- columnNames1
 
 #Merge both the dataframes using cbind
 tempFull_Data_merged <- cbind(tempFull_Data_first, tempFull_Data_second)
-tempFull_Data_merged
+View(tempFull_Data_merged)
 
+chessRound  <- tempFull_Data_merged[,c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24)]
+
+names(chessRound) <- c("PID","PName","Total","R1","R1R","R2","R2R","R3","R3R","R4","R4R","R5","R5R","R6","R6R","R7","R7R","State","Pre","Post")
