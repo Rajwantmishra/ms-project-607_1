@@ -15,8 +15,16 @@ library(DT)
 ##Commit from Rajwant Start
 # Skip the 1st row "----------"
 # Read the data 
+# Reading File from Local
 cd2 <-read_lines("tournamentinfo.txt",skip = 1)
 cd2
+# Reading File from Local END
+
+# Reading File from Online  Working Code
+# raw = "https://raw.githubusercontent.com/Rajwantmishra/ms-project-607_1/master/tournamentinfo.txt"
+# cd2 <-read_lines(raw,skip = 1)
+# cd2
+# Reading File from Online END
 
 # Repalce all "------" by NA
 # Read only data apart from header
