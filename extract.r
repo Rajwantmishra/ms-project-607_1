@@ -9,6 +9,7 @@ library(crayon)
 library(lubridate)
 library(rjson)
 library(readxl) 
+library(DT)
 
 ## END OF LOADING
 ##Commit from Rajwant Start
@@ -164,5 +165,7 @@ for (n in 1:dim(Final_Chess_Data)[1]){
   Final_Chess_Data$score[n] <- AVGS(as.integer(Final_Chess_Data$PID[n]))
  
 }
+  
+DT::datatable(Final_Chess_Data[,c(2,18,3,19,21)],colnames = c("PlayerName","State","Total Points","Pre rating","Avg Opp Rating"))                           
 ##Commit from Rajwant End
 
