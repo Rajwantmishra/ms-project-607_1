@@ -76,5 +76,5 @@ View(tempFull_Data_merged)
 
 chessRound  <- tempFull_Data_merged[,c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,22,23)]
 
-# R1R, R2R are indicator of Results of respective rounds
-names(chessRound) <- c("PID","PName","Total","R1","R1R","R2","R2R","R3","R3R","R4","R4R","R5","R5R","R6","R6R","R7","R7R","State","Pre","Post")
+# R1O, R2O are indicator of Opponent of respective rounds
+names(chessRound) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
