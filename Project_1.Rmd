@@ -1,6 +1,6 @@
 ---
 title: "Project_1"
-author: "Priya Shaji"
+author: "Santosh Cheruku|Samantha|Rajwant Mishra|Priya Shaji"
 date: "2/21/2019"
 output: html_document
 ---
