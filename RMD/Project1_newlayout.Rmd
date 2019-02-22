@@ -182,17 +182,17 @@ tempFull_Data_merged <- tempFull_Data
 ***
 *Method 2*
 ```{r eval=FALSE}
-## create a dataframe called chess
-## extractt the data from column 1 and column 2
+# create a dataframe called chess
+# extractt the data from column 1 and column 2
 chess <- data.frame(Name = tmp$V2[c(TRUE, FALSE, FALSE)], State = tmp$V1[c(FALSE, TRUE, FALSE)], Points = round(as.numeric(tmp$V3[c(TRUE, FALSE, FALSE)]), 1), Rating = integer(64), opponents_averageRating = integer(64))
 chess
 
-## extract the pre-rating score using regular expressions
+# extract the pre-rating score using regular expressions
 tmp_rate <- str_extract(tmp$V2[c(FALSE, TRUE, FALSE)], "R:[:blank:]+[:digit:]+")
 tmp_rate
 chess$Rating <- as.numeric(str_extract(tmp_rate, "[:digit:]+"))
 
-##include all the necessary columns in the ratings dataframe
+# include all the necessary columns in the ratings dataframe
 ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = chess$Rating, R1 = as.numeric(str_extract(tmp$V4[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R2 = as.numeric(str_extract(tmp$V5[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R3 = as.numeric(str_extract(tmp$V6[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R4 = as.numeric(str_extract(tmp$V7[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R5 =  as.numeric(str_extract(tmp$V8[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R6 =  as.numeric(str_extract(tmp$V9[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R7 =  as.numeric(str_extract(tmp$V10[c(TRUE, FALSE, FALSE)], "[:digit:]+")), avg_rate = numeric(64))
 ```
 
@@ -280,7 +280,7 @@ names(Final_Chess_Data) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R
 Method 2 brilliantly cleaned and created the data frame simultaneously.
 
 ```{r eval=FALSE}
-##include all the necessary columns in the ratings dataframe
+# include all the necessary columns in the ratings dataframe
 ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = chess$Rating, R1 = as.numeric(str_extract(tmp$V4[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R2 = as.numeric(str_extract(tmp$V5[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R3 = as.numeric(str_extract(tmp$V6[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R4 = as.numeric(str_extract(tmp$V7[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R5 =  as.numeric(str_extract(tmp$V8[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R6 =  as.numeric(str_extract(tmp$V9[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R7 =  as.numeric(str_extract(tmp$V10[c(TRUE, FALSE, FALSE)], "[:digit:]+")), avg_rate = numeric(64))
 ```
 
@@ -352,8 +352,8 @@ for (n in 1:dim(Final_Chess_Data)[1]){
 *Method 2*
 
 ```{r eval=FALSE}
-## Found the for loop and rowMeans method online.
-## Replace the player numbers in each round with their pre-rating number
+
+# Replace the player numbers in each round with their pre-rating number
 for (i in 1:64) {
   ratings$R1[i] <- ratings$rate[ratings$R1[i]]
   ratings$R2[i] <- ratings$rate[ratings$R2[i]]
@@ -364,7 +364,7 @@ for (i in 1:64) {
   ratings$R7[i] <- ratings$rate[ratings$R7[i]]
 }
 
-## use rowMeans function for calculating the average rating of each player
+# use rowMeans function for calculating the average rating of each player
 for (i in 1:64) {
   ratings$avg_rate[i] <- rowMeans(ratings[i, 3:9], na.rm = TRUE)
 }
@@ -399,4 +399,3 @@ The appropriate columns were selected and ordered as indicated in the beginning.
 #### Works Cited
 
 1. Wickham, H. (2017). R: Package `stringr`. Retrieved February 12, 2019, from https://cran.r-project.org/web/packages/stringr/stringr.pdf
-
