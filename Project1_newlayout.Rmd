@@ -385,7 +385,7 @@ for (i in 1:length(ChessTourn$PreRating)){
     players <- as.numeric(as.vector(ChessTourn[i,3:9]))
     TotalRating <- sum(ChessTourn[players, "PreRating"])
     NumOppt <-  sum(ChessTourn[i,c(3:9)]!=0)
-    PreRatingAvg <- round(TotalRating / NumOppt, digits = 0)   
+    PreRatingAvg[i] <- round(TotalRating / NumOppt, digits = 0)   
     }
 ChessTourn$PreRatingAvg <- PreRatingAvg
 ```
