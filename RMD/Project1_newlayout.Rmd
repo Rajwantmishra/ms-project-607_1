@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 #### Problem Statement 
 
-In this project, we're given a text file with chess tournament results where the information has some structure. Generates a .CSV file (that could for example be imported into a SQL database) with the following information for all of the players:
+In this project, we're given a text file with chess tournament results where the information has some structure.The task is to generate a .CSV file (that could for example be imported into a SQL database) with the following information for all of the players:
 
 |Player's Name|Player's State|Total Number of Points|Player's Pre-Rating|Average Pre-Chess Rating of Opponents|
 |-------------|--------------|----------------------|-------------------|-------------------------------------|
