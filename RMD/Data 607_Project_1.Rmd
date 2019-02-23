@@ -8,7 +8,22 @@ output:
    
 ---
 ***
+<style>
 
+#main .nav-tabs li.active a {
+    
+    background: antiquewhite;
+}
+#main .nav-tabs a {
+    
+    background: lightgray;
+}
+summary {
+    
+    padding: 10px 10px 10px 10px;
+    background: #deeacd;
+}
+</style>
 
 Group Name: SPARK
 =================
