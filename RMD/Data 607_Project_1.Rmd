@@ -23,7 +23,13 @@ summary {
     padding: 10px 10px 10px 10px;
     background: #deeacd;
 }
+
+/* Dashed red border */
+hr {
+  border-top: 1px dashed red;
+}
 </style>
+
 
 Group Name: SPARK
 =================
@@ -193,14 +199,16 @@ library(dplyr)
 ```
 ***
 
-#### Key Methods Used To Restructe the .txt file into the Dataframe {.tabset .tabset-fade .tabset.-pills}
+### Key Methods Used To Restructe the .txt file into the Dataframe 
 
 ***
-##### Pattern Replacement Methods
+#### Pattern Replacement Methods {.tabset .tabset-fade .tabset.-pills}
+<details>
+  <summary> Check Code </summary>
 
 These are the different steps we took to identify and replace specific characters from the text file in order to convert the text into a data frame.
 
-*Method 1*
+##### *Method 1*
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
 # Read the File from Local and Skip the 1st row "----------"
@@ -236,7 +244,7 @@ tempFull_Data_merged <- tempFull_Data
 ```
 
 ***
-*Method 2*
+##### *Method 2*
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
 # create a dataframe called chess
@@ -263,7 +271,7 @@ ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = 
 ```
 
 ***
-*Method 3*
+##### *Method 3*
 ```{r eval=FALSE}
 theURL <- "https://raw.githubusercontent.com/greeneyefirefly/Data607/master/Projects/Project%201/playerdata.txt"
 data <- file(theURL, open="r")
@@ -306,11 +314,14 @@ for (i in seq(1, length(playerresult)-1, by = 2)){
 ChessTourn <- as.data.frame(do.call(rbind, strsplit(fnew, ",")), stringsAsFactors = FALSE)
 ```
 
+</details>
 ***
-##### Rigorous Cleaning of the Data Frame
 
-*Method 1*
-
+#### Rigorous Cleaning of the Data Frame {.tabset .tabset-fade .tabset.-pills}
+<details>
+  <summary>Check Code</summary>
+  
+##### *Method 1*
 ```{r eval=FALSE}
 
 # ----------------------------------------------------------#
@@ -394,10 +405,8 @@ names(Final_Chess_Data) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R
 ```
 
 ***
-*Method 2*
-
+##### *Method 2*
 Method 2 brilliantly cleaned and created the data frame simultaneously.
-
 ```{r eval=FALSE}
 
 # ----------------------------------------------------------#
@@ -408,8 +417,7 @@ ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = 
 ```
 
 ***
-*Method 3*
-
+##### *Method 3*
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
 # Adding the column names which are in the 1st row, 
@@ -454,16 +462,21 @@ ChessTourn[c(1,10)] <- sapply(as.vector((ChessTourn)[c(1,10)]), str_trim)
 ChessTourn[is.na(ChessTourn)] <- 0  
 ```
 
+</details>
+
 ***
 
-##### Pre-tournament opponents' ratings
+
+#### Pre-tournament opponents' ratings {.tabset .tabset-fade .tabset.-pills}
 
 At this point, each method had successfully cleaned and formatted the data frame in order to correctly determine the pre-tournament opponents' rating. This was done using for-loops for the calculation of the mean.
 
 
-
 <details>
-  <summary> *Method 1* ** Using Function **</summary>
+  <summary>Check Code</summary>
+  
+##### *Method 1* 
+** Using Function **
   
 
 ```{r eval=FALSE}
@@ -496,10 +509,10 @@ for (n in 1:dim(Final_Chess_Data)[1]){
   Final_Chess_Data$score[n] <- AVGS(as.integer(Final_Chess_Data$PID[n]))
  }
 ```
-</details>
+
 ***
-<details>
-  <summary> *Method 2* ** In For Loop **</summary>
+##### *Method 2* 
+** In For Loop **
 
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
@@ -524,11 +537,11 @@ for (i in 1:64) {
 }
 chess$opponents_averageRating <- round(ratings$avg_rate, digits = 0)
 ```
-</details>
+
 
 ***
-<details>
-  <summary> *Method 3* ** In For Loop Version 2 **</summary>
+#####  *Method 3* 
+** In For Loop Version 2 **
 
 ```{r eval=FALSE}
 
@@ -548,11 +561,19 @@ for (i in 1:length(ChessTourn$PreRating)){
     }
 ChessTourn$PreRatingAvg <- PreRatingAvg
 ```
+
 </details>
 ***
-##### Final Exporting of the CSV
+#### Final Exporting of the CSV
 
 The appropriate columns were selected and ordered as indicated in the beginning. Each method exported the data frame as a csv file using `write.csv()`. These csv file can then be stored as a SQL database.
+
+```{r eval=FALSE}
+
+### Connect to export data into CSV
+write.csv(Final_Chess_Data[,c(2,18,3,19,21)], file = "ChessData.csv")
+```
+
 
 ***
 #### Works Cited
