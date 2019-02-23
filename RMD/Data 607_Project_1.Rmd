@@ -576,6 +576,7 @@ ChessTourn$PreRatingAvg <- PreRatingAvg
 
 </details>
 ***
+
 #### Final Exporting of the CSV
 
 The appropriate columns were selected and ordered as indicated in the beginning. Each method exported the data frame as a csv file using `write.csv()`. These csv file can then be stored as a SQL database.
