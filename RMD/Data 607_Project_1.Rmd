@@ -323,6 +323,8 @@ ChessTourn <- as.data.frame(do.call(rbind, strsplit(fnew, ",")), stringsAsFactor
 </details>
 ***
 
+
+
 #### Rigorous Cleaning of the Data Frame {.tabset .tabset-fade .tabset.-pills}
 <details>
   <summary>Check Code</summary>
@@ -576,6 +578,8 @@ ChessTourn$PreRatingAvg <- PreRatingAvg
 
 </details>
 ***
+
+
 
 #### Final Exporting of the CSV
 
