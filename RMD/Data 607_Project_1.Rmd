@@ -209,6 +209,8 @@ library(dplyr)
 These are the different steps we took to identify and replace specific characters from the text file in order to convert the text into a data frame.
 
 ##### *Method 1*
+** Using read_lines **
+
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
 # Read the File from Local and Skip the 1st row "----------"
@@ -245,6 +247,8 @@ tempFull_Data_merged <- tempFull_Data
 
 ***
 ##### *Method 2*
+** Using read.delim **
+
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
 # create a dataframe called chess
@@ -272,6 +276,8 @@ ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = 
 
 ***
 ##### *Method 3*
+** Using github url **
+
 ```{r eval=FALSE}
 theURL <- "https://raw.githubusercontent.com/greeneyefirefly/Data607/master/Projects/Project%201/playerdata.txt"
 data <- file(theURL, open="r")
@@ -322,6 +328,8 @@ ChessTourn <- as.data.frame(do.call(rbind, strsplit(fnew, ",")), stringsAsFactor
   <summary>Check Code</summary>
   
 ##### *Method 1*
+** Creating two dataframes and binding the necessary data using string functions and regular expressions **
+
 ```{r eval=FALSE}
 
 # ----------------------------------------------------------#
@@ -406,6 +414,8 @@ names(Final_Chess_Data) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R
 
 ***
 ##### *Method 2*
+** Using str_trim ,str_extract and regular expressions **
+
 Method 2 brilliantly cleaned and created the data frame simultaneously.
 ```{r eval=FALSE}
 
@@ -418,6 +428,8 @@ ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = 
 
 ***
 ##### *Method 3*
+ ** Step by Step process: Adding and removing the data rows, spaces and columns needed **
+
 ```{r eval=FALSE}
 # ----------------------------------------------------------#
 # Adding the column names which are in the 1st row, 
