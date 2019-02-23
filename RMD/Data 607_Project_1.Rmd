@@ -321,6 +321,8 @@ ChessTourn <- as.data.frame(do.call(rbind, strsplit(fnew, ",")), stringsAsFactor
 ```
 
 </details>
+
+
 ***
 
 
@@ -576,6 +578,8 @@ ChessTourn$PreRatingAvg <- PreRatingAvg
 ```
 
 </details>
+
+
 ***
 
 
