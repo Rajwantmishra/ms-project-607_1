@@ -1,6 +1,7 @@
 # Chess Data extraction for MS Project class of 607 
 
 In this project, you’re given a text file with chess tournament results where the information has some structure. Your job is to create an R Markdown file that generates a .CSV file (that could for example be imported into a SQL database) with the ``following information for all of the players``:
+
 |Player's Name|Player's State|Total Number of Points|Player's Pre-Rating|Average Pre-Chess Rating of Opponents|
 |-------------|--------------|----------------------|-------------------|-------------------------------------|
 GARY HUA |	ON |	6.0 |	1794 |	1605 |
