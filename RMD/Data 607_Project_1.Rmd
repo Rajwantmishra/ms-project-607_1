@@ -23,11 +23,19 @@ summary {
     padding: 10px 10px 10px 10px;
     background: #deeacd;
 }
-
+#works-cited{
+    background: #fcfcfc;
+    height: 100%;
+    margin-left: 300px;
+    max-width: 900px;
+    min-height: 100%;
+    padding: 2px 20px 20px 50px;
+}
 /* Dashed red border */
 hr {
   border-top: 1px dashed red;
 }
+
 </style>
 
 
@@ -199,7 +207,7 @@ library(dplyr)
 ```
 ***
 
-### Key Methods Used To Restructe the .txt file into the Dataframe 
+### Key Methods Used To Restructure the .txt file into the Dataframe 
 
 ***
 #### Pattern Replacement Methods {.tabset .tabset-fade .tabset.-pills}
@@ -595,6 +603,6 @@ write.csv(Final_Chess_Data[,c(2,18,3,19,21)], file = "ChessData.csv")
 
 
 ***
-#### Works Cited
-
+Works Cited
+==============
 1. Wickham, H. (2017). R: Package `stringr`. Retrieved February 12, 2019, from https://cran.r-project.org/web/packages/stringr/stringr.pdf
