@@ -52,14 +52,14 @@ Each contributor decided to work on a solution in order to identify the differen
 
 1. Loading the specific R packages we felt that could solve this problem easily.
 ![](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/Graphics/Slide2.PNG?raw=true) 
-```
+
 
 
 #### Transform
 
 2. The different methods of cleaning and formatting with text file
 ![](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/Graphics/Slide3.PNG?raw=true) 
-```
+
 
 #### Publish
 
