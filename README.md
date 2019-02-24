@@ -11,12 +11,17 @@ GARY HUA |	ON |	6.0 |	1794 |	1605 |
 
 [text File can be downloaned from here ](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/tournamentinfo.txt)
 
-# Contributors:
-* [Santosh Cheruku](https://github.com/...)
+#### Group Members and Contributors:
+
+* [Santosh Cheruku](https://github.com/san123i)
 * [Samantha Deokinanan](https://github.com/greeneyefirefly)
 * [Rajwant Mishra](https://github.com/rajwantmishra)
-* [Priya Shaji](https://github.com/...)
+* [Priya Shaji](https://github.com/PriyaShaji)
 
+#### Rpub 
+
+Rpub Link [Project Page](http://rpubs.com/Rajwantmishra/project_spark_607_1) 
+ 
 
 
 ***Data in Text File***
@@ -26,21 +31,6 @@ GARY HUA |	ON |	6.0 |	1794 |	1605 |
 ***Data after work in R***
 
 [![Data After](https://i2.wp.com/whatsq.com/wp-content/uploads/2018/08/workingsample.png)]()
-
-
-#### Group Members and Contributors:
-
-* [Santosh Cheruku](https://github.com/san123i)
-* [Samantha Deokinanan](https://github.com/greeneyefirefly)
-* [Rajwant Mishra](https://github.com/rajwantmishra)
-* [Priya Shaji](https://github.com/PriyaShaji)
-
-#### Github 
-
-All the project work and graphics are availble under github [Project Page](https://github.com/Rajwantmishra/ms-project-607_1). 
-
-
-***
 
 ***
 Summary of the Approaches
