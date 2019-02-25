@@ -1,0 +1,608 @@
+---
+title: "DATA 607 Project 1"
+date: "22 February, 2019"
+output: 
+  rmdformats::readthedown:
+    highlight: kate
+    toc_depth: 4
+   
+---
+***
+<style>
+
+#main .nav-tabs li.active a {
+    
+    background: antiquewhite;
+}
+#main .nav-tabs a {
+    
+    background: lightgray;
+}
+summary {
+    
+    padding: 10px 10px 10px 10px;
+    background: #deeacd;
+}
+#works-cited{
+    background: #fcfcfc;
+    height: 100%;
+    margin-left: 300px;
+    max-width: 900px;
+    min-height: 100%;
+    padding: 2px 20px 20px 50px;
+}
+/* Dashed red border */
+hr {
+  border-top: 1px dashed red;
+}
+
+</style>
+
+
+Group Name: SPARK
+=================
+#### Group Members and Contributors:
+
+* [Santosh Cheruku](https://github.com/san123i)
+* [Samantha Deokinanan](https://github.com/greeneyefirefly)
+* [Rajwant Mishra](https://github.com/rajwantmishra)
+* [Priya Shaji](https://github.com/PriyaShaji)
+
+#### Github 
+
+All the project work and graphics are availble under github [Project Page](https://github.com/Rajwantmishra/ms-project-607_1). 
+
+
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Problem Statement
+=================
+
+In this project, we're given a text file with chess tournament results where the information has some structure.The task is to generate a .CSV file (that could for example be imported into a SQL database) with the following information for all of the players:
+
+|Player's Name|Player's State|Total Number of Points|Player's Pre-Rating|Average Pre-Chess Rating of Opponents|
+|-------------|--------------|----------------------|-------------------|-------------------------------------|
+GARY HUA |	ON |	6.0 |	1794 |	1605 |
+-------------------------------------------
+
+**Data in Text File**
+: The chess tournament text file is written in a format that is not legible in R as it is. This file needs to be restructured in order to find the average pre-tournament score.
+
+[![Data in Text File](https://i2.wp.com/whatsq.com/wp-content/uploads/2018/08/sample.png)]()
+
+***
+Summary of the Approaches
+==========================
+
+Each contributor decided to work on a solution in order to identify the different ways this task can be solved. However, there were key steps we took which were similar.
+
+#### Extract 
+
+1. Loading the specific R packages we felt that could solve this problem easily.
+
+```{r message=FALSE, warning=FALSE,echo=FALSE , paged.print=FALSE}
+knitr::include_graphics("https://github.com/Rajwantmishra/ms-project-607_1/blob/master/Graphics/Slide2.PNG?raw=true") 
+```
+
+
+#### Transform
+
+2. The different methods of cleaning and formatting with text file
+
+```{r message=FALSE, warning=FALSE, echo=FALSE, paged.print=FALSE}
+knitr::include_graphics("https://github.com/Rajwantmishra/ms-project-607_1/blob/master/Graphics/Slide3.PNG?raw=true") 
+```
+
+#### Publish
+
+3. Lastly, building and exporting the final CSV 
+
+```{r message=FALSE, warning=FALSE, echo=FALSE,paged.print=FALSE}
+knitr::include_graphics("https://github.com/Rajwantmishra/ms-project-607_1/blob/master/Graphics/Slide4.PNG?raw=true")
+```
+
+Solution
+===================
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# THIS CODE IS RUN ONLY TO SHOW OUTPUT
+suppressWarnings(library(tidyverse))
+suppressWarnings(library(stringr))
+# suppressWarnings(library(data.table))
+# library(plyr)
+# library(XML)
+# library(crayon)
+# library(lubridate)
+# library(rjson)
+# library(readxl) 
+library(DT)
+cd2 <-read_lines("tournamentinfo.txt",skip = 1)
+cd2_data <- unlist(str_replace_all(cd2,"(-{89})","NA"))[-c(1:3)]
+cd2_head <- unlist(str_replace_all(cd2,"(-{89})","NA"))[c(1:2)]
+tempdata <- unlist(str_replace_all(cd2,"(-{89})","NA"))[c(4:5,7:8)]
+playerID <- trimws(unlist(str_extract_all(cd2_data," \\d{1,2} ")))
+tempFull_Data <-  trimws(unlist(str_extract_all(cd2_data,"[[:alpha:]-? ?]{2,}|[\\d.?\\d? +]{2,}|[\\d +]{1,2}|[\\w:?\\d? +]{2,}",simplify = TRUE)))
+tempFull_Data <- as.data.frame(tempFull_Data, stringsAsFactors=F)
+tempFull_Data <- tempFull_Data[which(!tempFull_Data$V1=="NA"),]
+tempFull_Data_merged <- tempFull_Data
+tempFull_Data_first <- data.frame()
+tempFull_Data_second <- data.frame()
+for(rowNum in 1:nrow(tempFull_Data)) {
+  if(rowNum %% 2 == 0) {
+    tempFull_Data_second <- rbind(tempFull_Data_second, tempFull_Data[rowNum,])
+  } else {
+    tempFull_Data_first <- rbind(tempFull_Data_first, tempFull_Data[rowNum,])
+  }
+}
+columnNames1 <- c()
+for (i in 20:33) {
+  columnNames1 <- c(columnNames1, paste("V", i, sep = ""))
+}
+colnames(tempFull_Data_second) <- columnNames1
+tempFull_Data_merged <- cbind(tempFull_Data_first, tempFull_Data_second)
+chessRound  <- tempFull_Data_merged[,c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,22,23)]
+names(chessRound) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
+chessRound[,18:20] <- mutate(chessRound[,18:20], Pre = ifelse( str_detect(Pre,"P\\d{2}$"),trimws(str_extract(Pre," \\d{3,4}")), trimws(str_extract(Pre," \\d{3,4}")) ))
+chessRound_Temp <- mutate_at(chessRound[,1:17], vars(R1,R2,R3,R4,R5,R6,R7,R1O,R2O,R3O,R4O,R5O,R6O,R7O),
+                             list(~ ifelse( str_detect(.,"B|H|U"), NA, .)))
+chessRound_Temp <- t(apply(chessRound_Temp, 1,  function(x) c(x[!is.na(x)], x[is.na(x)])))
+chessRound_Temp <- as.data.frame(chessRound_Temp,stringsAsFactors=F)
+Final_Chess_Data <- data.frame(chessRound_Temp[,],chessRound[,18:20])
+ 
+ names(Final_Chess_Data) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
+AVGS<- function(pid){
+  score <- 0
+  teamR <- 0
+ noMatch <- 0
+ suppressWarnings(rm(team))
+team<- Final_Chess_Data[pid,c(5,7,9,11,13,15,17)] 
+ for (n in 1:7)
+ {
+   if(is.na(team[1,n])||team[1,n]==""){
+     noMatch = noMatch
+    } else{
+       noMatch = noMatch + 1
+        teamR<-  teamR + as.integer(Final_Chess_Data[as.integer(team[1,n]),19])
+   }
+ }
+  score <- round(teamR/noMatch)
+  return(score[1])
+}
+for (n in 1:dim(Final_Chess_Data)[1]){
+  Final_Chess_Data$score[n] <- AVGS(as.integer(Final_Chess_Data$PID[n]))
+ }
+```
+
+***
+#### The Text File
+
+The chess tournament text file is written in a format that is not legible in R as it is. This file needs to be restructured in order to find the average pre-tournament score.
+
+```{r echo=FALSE}
+head(cd2)
+```
+
+***
+#### Final CSV Output
+
+Once all the rigorous formatting was carried out, the final, workable data frame now has the format below.
+
+```{r echo=FALSE}
+DT::datatable(Final_Chess_Data[,c(2,18,3,19,21)], colnames = c("PlayerName","State","Total Points","Pre rating","Avg Opp Rating")) 
+
+```
+
+***
+#### The R Package
+`stringr` was the main package needed to solve this problem, while many other package were utilized to perfrom data wrangling (`dplyr` , `tidyverse`) and create a presentable R markdown page `rmdformats` .
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(stringr)
+library(tidyverse)
+library(dplyr)
+
+```
+***
+
+### Key Methods Used To Restructure the .txt file into the Dataframe 
+
+***
+#### Pattern Replacement Methods {.tabset .tabset-fade .tabset.-pills}
+<details>
+  <summary> Check Code </summary>
+
+These are the different steps we took to identify and replace specific characters from the text file in order to convert the text into a data frame.
+
+##### *Method 1*
+** Using read_lines **
+
+```{r eval=FALSE}
+# ----------------------------------------------------------#
+# Read the File from Local and Skip the 1st row "----------"
+# ----------------------------------------------------------#
+
+cd2 <-read_lines("tournamentinfo.txt",skip = 1)
+
+# ----------------------------------------------------------#
+# Replace all "------" by NA
+# Read only data apart from header
+# ----------------------------------------------------------#
+
+cd2_data <- unlist(str_replace_all(cd2,"(-{89})","NA"))[-c(1:3)]
+cd2_head <- unlist(str_replace_all(cd2,"(-{89})","NA"))[c(1:2)]
+
+# ----------------------------------------------------------#
+# Extracting common patterns data in dataframe , and remvoing 
+# leading or trailing sapces.
+# ----------------------------------------------------------#
+tempFull_Data <-  trimws(unlist(str_extract_all(cd2_data,"[[:alpha:]-? ?]{2,}|[\\d.?\\d? +]{2,}|[\\d +]{1,2}|[\\w:?\\d? +]{2,}",simplify = TRUE)))
+tempFull_Data <- as.data.frame(tempFull_Data, stringsAsFactors=F)
+
+# ----------------------------------------------------------#
+# Removing All NA for 1st column , As it belongs to 3rd row 
+# in text file with Seprator which was repalced by NA.
+# ----------------------------------------------------------#
+tempFull_Data <- tempFull_Data[which(!tempFull_Data$V1=="NA"),]
+
+# ----------------------------------------------------------#
+# -----------Final Data to work for next steps.
+# ----------------------------------------------------------#
+tempFull_Data_merged <- tempFull_Data
+```
+
+***
+##### *Method 2*
+** Using read.delim **
+
+```{r eval=FALSE}
+# ----------------------------------------------------------#
+# create a dataframe called chess
+# extract the data from column 1 and column 2
+# ----------------------------------------------------------#
+
+tmp <- read.delim("tournamentinfo.txt", header=FALSE, sep="|", skip = 4 ,stringsAsFactors = FALSE)
+chess <- data.frame(Name = tmp$V2[c(TRUE, FALSE, FALSE)], State = tmp$V1[c(FALSE, TRUE, FALSE)], Points = round(as.numeric(tmp$V3[c(TRUE, FALSE, FALSE)]), 1), Rating = integer(64), opponents_averageRating = integer(64))
+chess
+
+# ----------------------------------------------------------#
+# extract the pre-rating score using regular expressions
+# ----------------------------------------------------------#
+
+tmp_rate <- str_extract(tmp$V2[c(FALSE, TRUE, FALSE)], "R:[:blank:]+[:digit:]+")
+tmp_rate
+chess$Rating <- as.numeric(str_extract(tmp_rate, "[:digit:]+"))
+
+# ----------------------------------------------------------#
+# include all the necessary columns in the ratings dataframe
+# ----------------------------------------------------------#
+
+ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = chess$Rating, R1 = as.numeric(str_extract(tmp$V4[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R2 = as.numeric(str_extract(tmp$V5[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R3 = as.numeric(str_extract(tmp$V6[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R4 = as.numeric(str_extract(tmp$V7[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R5 =  as.numeric(str_extract(tmp$V8[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R6 =  as.numeric(str_extract(tmp$V9[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R7 =  as.numeric(str_extract(tmp$V10[c(TRUE, FALSE, FALSE)], "[:digit:]+")), avg_rate = numeric(64))
+```
+
+***
+##### *Method 3*
+** Using github url **
+
+```{r eval=FALSE}
+theURL <- "https://raw.githubusercontent.com/greeneyefirefly/Data607/master/Projects/Project%201/playerdata.txt"
+data <- file(theURL, open="r")
+playerresult <- readLines(data)
+
+# ----------------------------------------------------------#
+# Identifying where the dashes are located 
+# ----------------------------------------------------------#
+
+dash <- str_detect(playerresult, '^[-]{2,}$') 
+
+# ----------------------------------------------------------#
+# Remove these rows so that there is nothing separating one player from the other
+# ----------------------------------------------------------#
+
+playerresult <- playerresult[!dash == "TRUE"]
+
+# ----------------------------------------------------------#
+# Remove/Replace the unnecessary indications of win, draw or lose, pipelines and forward slashes
+## removed W, D, & L
+# ----------------------------------------------------------#
+
+playerresult <- str_remove_all(playerresult, "[WDL]") 
+
+# ----------------------------------------------------------#
+## replace pipelines and slashes with commas so it can later be transfromed into a dataframe
+# ----------------------------------------------------------#
+
+playerresult <- str_replace_all(playerresult, "[|/]",",")   
+
+# ----------------------------------------------------------#
+# Combine the two rows for each player
+# ----------------------------------------------------------#
+
+fnew <- c("") 
+for (i in seq(1, length(playerresult)-1, by = 2)){
+   fnew <- c(fnew, paste(playerresult[i], playerresult[i+1], sep = "", collapse = NULL))
+}
+# Creating the dataframe
+ChessTourn <- as.data.frame(do.call(rbind, strsplit(fnew, ",")), stringsAsFactors = FALSE)
+```
+
+</details>
+
+
+***
+
+
+#### Rigorous Cleaning of the Data Frame {.tabset .tabset-fade .tabset.-pills}
+<details>
+  <summary>Check Code</summary>
+  
+##### *Method 1*
+** Creating two dataframes and binding the necessary data using string functions and regular expressions **
+
+```{r eval=FALSE}
+
+# ----------------------------------------------------------#
+# Create two empty data frames which can hold first and second 
+# rows respectively (2nd row belongs to player in 1st row)
+# ----------------------------------------------------------#
+
+tempFull_Data_first <- data.frame()
+tempFull_Data_second <- data.frame()
+#Iterator over full dataset and load the first and second data frames
+for(rowNum in 1:nrow(tempFull_Data)) {
+  if(rowNum %% 2 == 0) {
+    tempFull_Data_second <- rbind(tempFull_Data_second, tempFull_Data[rowNum,])
+  } else {
+    tempFull_Data_first <- rbind(tempFull_Data_first, tempFull_Data[rowNum,])
+  }
+}
+
+# ----------------------------------------------------------#
+# Set colnames for 2nd dataframe so that it doesn't conflict
+# with first dataframe i.e., from V20 to V33
+# ----------------------------------------------------------#
+columnNames1 <- c()
+for (i in 20:33) {
+  columnNames1 <- c(columnNames1, paste("V", i, sep = ""))
+}
+colnames(tempFull_Data_second) <- columnNames1
+
+# ----------------------------------------------------------#
+# Merge both the dataframes using cbind, 
+# Final Table with all info in 1 row.
+# ----------------------------------------------------------#
+
+tempFull_Data_merged <- cbind(tempFull_Data_first, tempFull_Data_second)
+
+# ----------------------------------------------------------#
+# ---Create Subset of data to only inlcude Chess Round data
+# ----------------------------------------------------------#
+
+chessRound  <- tempFull_Data_merged[,c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,22,23)]
+
+# ----------------------------------------------------------#
+# Column Name R1O, R2O...R7O are indicator of Opponent of respective rounds
+# ----------------------------------------------------------#
+names(chessRound) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
+
+# ----------------------------------------------------------#
+# Convert column "Pre" to Number, by reading only 3 or 4 digits only.
+# ----------------------------------------------------------#
+
+chessRound[,18:20] <- mutate( chessRound[,18:20], 
+                  Pre = ifelse( str_detect(Pre,"P\\d{2}$"), 
+                                trimws(str_extract(Pre," \\d{3,4}")), 
+                                trimws(str_extract(Pre," \\d{3,4}")) ))
+
+
+# ----------------------------------------------------------#
+# Convert all Rounds Column 
+# (R1,R2,R3,R4,R5,R6,R7,R1O,R2O,R3O,R4O,R5O,R6O,R7O)to NA 
+# if they have  B H U . Only keep W L ANF D
+# ----------------------------------------------------------#
+
+chessRound_Temp <- mutate_at( chessRound[,1:17], vars(R1,R2,R3,R4,R5,R6,R7,R1O,R2O,R3O,R4O,R5O,R6O,R7O),
+                        list(~ ifelse( str_detect(.,"B|H|U"), NA, .)))
+
+# ----------------------------------------------------------#
+# Shift all NA to end of the Row, so that we can read 
+# all the data one after the other .
+# ----------------------------------------------------------#
+# Here I am grouping the data into non-NA set and NA , 
+# for each row and then using Tranpose to get it in right format. 
+# ----------------------------------------------------------#
+chessRound_Temp <- t(apply(chessRound_Temp, 1,  function(x) c(x[!is.na(x)], x[is.na(x)])))
+chessRound_Temp <- as.data.frame(chessRound_Temp,stringsAsFactors=F)
+Final_Chess_Data <- data.frame(chessRound_Temp[,],chessRound[,18:20])
+ 
+# ----------------------------------------------------------#
+# -----------------    Rename Columns ----------------------#
+# ----------------------------------------------------------#
+names(Final_Chess_Data) <- c("PID","PName","Total","R1","R1O","R2","R2O","R3","R3O","R4","R4O","R5","R5O","R6","R6O","R7","R7O","State","Pre","Post")
+```
+
+***
+##### *Method 2*
+** Using str_trim ,str_extract and regular expressions **
+
+Method 2 brilliantly cleaned and created the data frame simultaneously.
+```{r eval=FALSE}
+
+# ----------------------------------------------------------#
+# include all the necessary columns in the ratings dataframe
+# ----------------------------------------------------------#
+
+ratings <- data.frame(playnum = str_trim(tmp$V1[c(TRUE, FALSE, FALSE)]), rate = chess$Rating, R1 = as.numeric(str_extract(tmp$V4[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R2 = as.numeric(str_extract(tmp$V5[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R3 = as.numeric(str_extract(tmp$V6[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R4 = as.numeric(str_extract(tmp$V7[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R5 =  as.numeric(str_extract(tmp$V8[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R6 =  as.numeric(str_extract(tmp$V9[c(TRUE, FALSE, FALSE)], "[:digit:]+")), R7 =  as.numeric(str_extract(tmp$V10[c(TRUE, FALSE, FALSE)], "[:digit:]+")), avg_rate = numeric(64))
+```
+
+***
+##### *Method 3*
+ ** Step by Step process: Adding and removing the data rows, spaces and columns needed **
+
+```{r eval=FALSE}
+# ----------------------------------------------------------#
+# Adding the column names which are in the 1st row, 
+# and removing the name row from the dataframe
+# ----------------------------------------------------------#
+
+names(ChessTourn) <- unlist(ChessTourn[1,])  
+ChessTourn = ChessTourn[-1,]
+# ----------------------------------------------------------#
+# Renaming and removing some columns
+# ----------------------------------------------------------#
+
+colnames(ChessTourn)[11] <- c("State")
+colnames(ChessTourn)[4:10] <- c("P1","P2","P3","P4","P5","P6","P7") # The opponents' number
+rownames(ChessTourn) <- 1:nrow(ChessTourn)
+ChessTourn[12] <- list(NULL) # Removing the USCFI numbers as they are not needed
+colnames(ChessTourn)[12] <- c("PreRating")
+ChessTourn[c(1,13:ncol(ChessTourn))] <- list(NULL) # Removing the other unnecessary columns
+
+# ----------------------------------------------------------#
+# Keeping the pre-rating scores for calculations later
+# ----------------------------------------------------------#
+
+ChessTourn$PreRating <- str_sub(ChessTourn$PreRating, 5, 8)
+
+# ----------------------------------------------------------#
+# Converting to number for calculations later
+# ----------------------------------------------------------#
+
+ChessTourn[c(2:9,11)] <- sapply((ChessTourn)[c(2:9,11)], as.character) 
+ChessTourn[c(2:9,11)] <- sapply((ChessTourn)[c(2:9,11)], as.numeric)  
+
+# ----------------------------------------------------------#
+# Removing spaces from players name and States
+# ----------------------------------------------------------#
+
+ChessTourn[c(1,10)] <- sapply(as.vector((ChessTourn)[c(1,10)]), str_trim) 
+
+# ----------------------------------------------------------#
+# Change NA values to zero for calculations later
+# ----------------------------------------------------------#
+ChessTourn[is.na(ChessTourn)] <- 0  
+```
+
+</details>
+
+***
+
+
+#### Pre-tournament opponents' ratings {.tabset .tabset-fade .tabset.-pills}
+
+At this point, each method had successfully cleaned and formatted the data frame in order to correctly determine the pre-tournament opponents' rating. This was done using for-loops for the calculation of the mean.
+
+
+<details>
+  <summary>Check Code</summary>
+  
+##### *Method 1* 
+** Using Function **
+  
+
+```{r eval=FALSE}
+# ----------------------------------------------------------#
+# Function to Calcualte Average Pre Chess Rating of Opponents	
+# ----------------------------------------------------------#
+AVGS<- function(pid){
+score <- 0
+teamR <- 0
+noMatch <- 0
+suppressWarnings(rm(team))
+team<- Final_Chess_Data[pid,c(5,7,9,11,13,15,17)] 
+for (n in 1:7)
+ {
+   if(is.na(team[1,n])||team[1,n]==""){
+     noMatch = noMatch
+    } else{
+       noMatch = noMatch + 1
+        teamR<-  teamR + as.integer(Final_Chess_Data[as.integer(team[1,n]),19])
+   }
+ }
+  score <- round(teamR/noMatch)
+  return(score[1])
+}
+
+# ----------------------------------------------------------#
+# Creating new Dataframe to store score in Final_Chess_Data
+# ----------------------------------------------------------#
+for (n in 1:dim(Final_Chess_Data)[1]){
+  Final_Chess_Data$score[n] <- AVGS(as.integer(Final_Chess_Data$PID[n]))
+ }
+```
+
+***
+##### *Method 2* 
+** In For Loop **
+
+```{r eval=FALSE}
+# ----------------------------------------------------------#
+# Replace the player numbers in each round with their pre-rating number
+# ----------------------------------------------------------#
+for (i in 1:64) {
+  ratings$R1[i] <- ratings$rate[ratings$R1[i]]
+  ratings$R2[i] <- ratings$rate[ratings$R2[i]]
+  ratings$R3[i] <- ratings$rate[ratings$R3[i]]
+  ratings$R4[i] <- ratings$rate[ratings$R4[i]]
+  ratings$R5[i] <- ratings$rate[ratings$R5[i]]
+  ratings$R6[i] <- ratings$rate[ratings$R6[i]]
+  ratings$R7[i] <- ratings$rate[ratings$R7[i]]
+}
+
+# ----------------------------------------------------------#
+# use rowMeans function for calculating the average rating of each player
+# ----------------------------------------------------------#
+
+for (i in 1:64) {
+  ratings$avg_rate[i] <- rowMeans(ratings[i, 3:9], na.rm = TRUE)
+}
+chess$opponents_averageRating <- round(ratings$avg_rate, digits = 0)
+```
+
+
+***
+#####  *Method 3* 
+** In For Loop Version 2 **
+
+```{r eval=FALSE}
+
+# ----------------------------------------------------------#
+# Initializing some vectors for calcuations
+# ----------------------------------------------------------#
+
+TotalRating <- numeric(0)
+NumOppt <- numeric(0)
+PreRatingAvg <- vector()
+# Pre-rating average
+for (i in 1:length(ChessTourn$PreRating)){
+    players <- as.numeric(as.vector(ChessTourn[i,3:9]))
+    TotalRating <- sum(ChessTourn[players, "PreRating"])
+    NumOppt <-  sum(ChessTourn[i,c(3:9)]!=0)
+    PreRatingAvg[i] <- round(TotalRating / NumOppt, digits = 0)   
+    }
+ChessTourn$PreRatingAvg <- PreRatingAvg
+```
+
+</details>
+
+
+***
+
+
+#### Final Exporting of the CSV
+
+The appropriate columns were selected and ordered as indicated in the beginning. Each method exported the data frame as a csv file using `write.csv()`. These csv file can then be stored as a SQL database.
+
+```{r eval=FALSE}
+
+### Connect to export data into CSV
+write.csv(Final_Chess_Data[,c(2,18,3,19,21)], file = "ChessData.csv")
+```
+
+
+***
+Works Cited
+==============
+1. Wickham, H. (2017). R: Package `stringr`. Retrieved February 12, 2019, from https://cran.r-project.org/web/packages/stringr/stringr.pdf

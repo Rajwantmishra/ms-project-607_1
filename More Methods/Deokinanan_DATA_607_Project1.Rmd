@@ -1,0 +1,165 @@
+---
+title: "CUNY MSDS Data 607 Project #1"
+author: "Samantha Deokinanan"
+date: "24 February, 2019"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+    toc_depth: 4
+---
+
+***
+
+#### Overview {.tabset .tabset-fade .tabset.-pills}
+
+In this project, there was a text file with chess tournament results where the information has some structure. This R Markdown generates a .CSV file with the following information for all of the players:
+
+|Player's Name|Player's State|Total Number of Points|Player's Pre-Rating|Average Pre-Chess Rating of Opponents|
+|-------------|--------------|----------------------|-------------------|-------------------------------------|
+
+***
+
+##### The Challenge
+
+For this project, I made it my challenge to *only* utilize functions found in the very useful `stringr` package since I don't work with text file often. I wanted to learn about this package, and this project was a great way to do this. 
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+library(stringr)
+```
+
+***
+
+##### The Text
+
+The text file was stored on my GitHub. The following retrieves this specific text file:
+
+```{r}
+theURL <- "https://raw.githubusercontent.com/greeneyefirefly/Data607/master/Projects/Project%201/playerdata.txt"
+data <- file(theURL, open="r")
+playerresult <- readLines(data)
+
+# A preview of the chess tournament text file
+head(playerresult)
+```
+
+***
+#### Cleaning the text {.tabset .tabset-fade .tabset.-pills}
+
+##### 1st: Separators
+
+There are a few formats of the layout in this text file that needs to be removed because it is difficult to read in R for calculations. These include:
+
+(a) The repeated dashes at the end of every two rows to separate each players information about the chess tournament.
+(b) The pipelines and forward slashes acting as separators for the variables and scores, respectively.
+
+Therefore, these bits of layout were remove/replace in order to allow R to read the text file easily.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Identifying where the dashes are located 
+dash <- str_detect(playerresult, '^[-]{2,}$')  
+
+# Remove these rows so that there is nothing separating one player from the other
+playerresult <- playerresult[!dash == "TRUE"]
+
+# Remove/Replace the unnecessary indications of win, draw or lose, pipelines and forward slashes
+## removed W, D, & L
+playerresult <- str_remove_all(playerresult, "[WDL]") 
+## replace pipelines and slashes with commas so it can later be transfromed into a dataframe
+playerresult <- str_replace_all(playerresult, "[|/]",",")   
+```
+
+***
+##### 2nd: Combine
+Moreover, these separators needed to be firstly removed in order to combine the two rows of player's information into one row. This function transforms the two rows into one.
+
+```{r}
+# Combine the two rows for each player
+fnew <- c("") 
+for (i in seq(1, length(playerresult)-1, by = 2)){
+   fnew <- c(fnew, paste(playerresult[i], playerresult[i+1], sep = "", collapse = NULL))
+}
+```
+
+***
+#### Text to Data Frame {.tabset .tabset-fade .tabset.-pills}
+
+##### Transformations
+Now that the text has been formatted with information that is workable, a data frame can be easily created with the comma separator which was added. Therefore in these next few steps, the data frame is put through some rigid visual and data class transformations.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+
+# Creating the dataframe
+ChessTourn <- as.data.frame(do.call(rbind, strsplit(fnew, ",")), stringsAsFactors = FALSE)
+
+# Adding the column names which are in the 1st row, and removing the name row from the dataframe
+names(ChessTourn) <- unlist(ChessTourn[1,])  
+ChessTourn = ChessTourn[-1,]    
+
+# Renaming and removing some columns
+colnames(ChessTourn)[11] <- c("State")
+colnames(ChessTourn)[4:10] <- c("P1","P2","P3","P4","P5","P6","P7") # The opponents' number
+rownames(ChessTourn) <- 1:nrow(ChessTourn)
+ChessTourn[12] <- list(NULL) # Removing the USCFI numbers as they are not needed
+colnames(ChessTourn)[12] <- c("PreRating")
+ChessTourn[c(1,13:ncol(ChessTourn))] <- list(NULL) # Removing the other unnecessary columns
+
+# Keeping the pre-rating scores for calculations later
+ChessTourn$PreRating <- str_sub(ChessTourn$PreRating, 5, 8)
+
+# Converting to number for calculations later
+ChessTourn[c(2:9,11)] <- sapply((ChessTourn)[c(2:9,11)], as.character) 
+ChessTourn[c(2:9,11)] <- sapply((ChessTourn)[c(2:9,11)], as.numeric)  
+
+# Removing spaces from players name and States
+ChessTourn[c(1,10)] <- sapply(as.vector((ChessTourn)[c(1,10)]), str_trim)  
+
+# Change NA values to zero for calculations later
+ChessTourn[is.na(ChessTourn)] <- 0  
+```
+
+***
+##### Pièce De Résistance
+
+After all these transformation, the data frame now looks like:
+```{r}
+head(ChessTourn)
+```
+
+BUT it is not over as yet!
+
+***
+#### Calculations {.tabset .tabset-fade .tabset.-pills}
+
+The pre-rating average for each player can be determined based on the their opponent's pre-rating. The average rating per player is found by using the pre-tournament opponents' ratings and dividing by the total number of games played.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Initializing some vectors for calcuations
+TotalRating <- numeric(0)
+NumOppt <- numeric(0)
+PreRatingAvg <- vector()
+
+# Pre-rating average
+for (i in 1:length(ChessTourn$PreRating)){
+    players <- as.numeric(as.vector(ChessTourn[i,3:9]))
+    TotalRating <- sum(ChessTourn[players, "PreRating"])
+    NumOppt <-  sum(ChessTourn[i,c(3:9)]!=0)
+    PreRatingAvg[i] <- round(TotalRating / NumOppt, digits = 0)   
+    }
+ChessTourn$PreRatingAvg <- PreRatingAvg
+```
+
+***
+#### Final Output
+The final output is a csv file in the format that was needed.
+
+```{r}
+ChessTourn <- ChessTourn[c(1,10,2,11,12)]
+head(ChessTourn)
+
+write.csv(ChessTourn, file="ChessTournament.csv")
+```
+
+
+#### Works Cited
+1. Wickham, H. (2017). R: Package `stringr`. Retrieved February 12, 2019, from https://cran.r-project.org/web/packages/stringr/stringr.pdf
+
