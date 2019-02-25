@@ -9,7 +9,7 @@ GARY HUA |	ON |	6.0 |	1794 |	1605 |
 
 1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and dividing by the total number of games played.
 
-[text File can be downloaned from here ](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/tournamentinfo.txt)
+[text File can be downloaded from here ](https://github.com/Rajwantmishra/ms-project-607_1/blob/master/tournamentinfo.txt)
 
 #### Group Members and Contributors:
 
